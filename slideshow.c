@@ -404,3 +404,5 @@ SDL_Texture *load_image(SDL_Renderer *renderer, const char *image_path, SDL_Rect
 
     return l_texture;
 }
+
+// Trial
