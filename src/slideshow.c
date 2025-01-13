@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
 
     fprintf(stdout, "Detected display resolution: %dx%d\n", window_width, window_height);
 
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"); // Enable high-quality texture scaling
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2"); // Enable high-quality texture scaling
 
     SDL_Window *window = SDL_CreateWindow("Slideshow", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_width, window_height, SDL_WINDOW_SHOWN);
     if (!window) {
