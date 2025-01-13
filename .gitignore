@@ -1,0 +1,8 @@
+```gitignore
+# Ignore build artifacts
+*.o
+slideshow
+
+# Ignore directories
+bin/
+build/
