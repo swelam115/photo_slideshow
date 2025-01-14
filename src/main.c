@@ -9,7 +9,7 @@
 #include "rendering.h"
 
 #define TRANSITION_TIME 1000 // Time for fade transitions in milliseconds
-#define DISPLAY_TIME 5000   // Time to display each image in milliseconds
+#define DISPLAY_TIME 6000   // Time to display each image in milliseconds
 
 // Global variables for window dimensions
 int window_width = 0;
