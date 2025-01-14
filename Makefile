@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-O3 -ffast-math -flto -Wall -Wextra -pthread -Iinclude
-LDFLAGS=-lSDL2 -lSDL2_image -lm
+LDFLAGS=-lSDL2 -lSDL2_image -lexif -lm
 
 OBJ = src/main.o src/image_handling.o src/event_handler.o src/rendering.o
 
