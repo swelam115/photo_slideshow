@@ -31,35 +31,43 @@ int get_exif_orientation(const char* filename) {
 }
 
 // Function to rotate an image based on its orientation
+// Function to manually rotate an SDL_Surface based on its orientation
 SDL_Surface* rotate_image(SDL_Surface* surface, int orientation) {
-    SDL_RendererFlip flip = SDL_FLIP_NONE;
-    double angle = 0;
-
+    SDL_Surface* rotated = NULL;
+    int w = surface->w;
+    int h = surface->h;
+    
     switch (orientation) {
-        case 2: flip = SDL_FLIP_HORIZONTAL; break;
-        case 3: angle = 180; break;
-        case 4: flip = SDL_FLIP_VERTICAL; break;
-        case 5: flip = SDL_FLIP_HORIZONTAL; angle = 90; break;
-        case 6: angle = 90; break;
-        case 7: flip = SDL_FLIP_HORIZONTAL; angle = -90; break;
-        case 8: angle = -90; break;
-        default: break; // Orientation 1: No transformation
+        case 3: // 180 degrees
+            rotated = SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, surface->format->format);
+            for (int y = 0; y < h; ++y) {
+                for (int x = 0; x < w; ++x) {
+                    ((Uint32*)rotated->pixels)[(h - y - 1) * w + (w - x - 1)] = ((Uint32*)surface->pixels)[y * w + x];
+                }
+            }
+            break;
+        case 6: // 90 degrees clockwise
+            rotated = SDL_CreateRGBSurfaceWithFormat(0, h, w, 32, surface->format->format);
+            for (int y = 0; y < h; ++y) {
+                for (int x = 0; x < w; ++x) {
+                    ((Uint32*)rotated->pixels)[x * h + (h - y - 1)] = ((Uint32*)surface->pixels)[y * w + x];
+                }
+            }
+            break;
+        case 8: // 90 degrees counterclockwise
+            rotated = SDL_CreateRGBSurfaceWithFormat(0, h, w, 32, surface->format->format);
+            for (int y = 0; y < h; ++y) {
+                for (int x = 0; x < w; ++x) {
+                    ((Uint32*)rotated->pixels)[(w - x - 1) * h + y] = ((Uint32*)surface->pixels)[y * w + x];
+                }
+            }
+            break;
+        default: // Orientation 1: No transformation
+            rotated = SDL_ConvertSurface(surface, surface->format, 0);
+            break;
     }
 
-    // Create a texture for rendering
-    SDL_Renderer* renderer = SDL_CreateRenderer(SDL_CreateWindow("Transform", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, surface->w, surface->h, 0), -1, 0);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-    // Render to a new surface with the correct orientation
-    SDL_Surface* transformed = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
-    SDL_SetRenderTarget(renderer, SDL_CreateTextureFromSurface(renderer, transformed));
-    SDL_RenderCopyEx(renderer, texture, NULL, NULL, angle, NULL, flip);
-
-    // Cleanup
-    SDL_DestroyTexture(texture);
-    SDL_DestroyRenderer(renderer);
-
-    return transformed;
+    return rotated;
 }
 
 // Function to load an image and create a texture
