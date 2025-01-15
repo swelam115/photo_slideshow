@@ -31,8 +31,12 @@ int get_exif_orientation(const char* filename) {
 }
 
 // Function to rotate an image based on its orientation
-// Function to manually rotate an SDL_Surface based on its orientation
 SDL_Surface* rotate_image(SDL_Surface* surface, int orientation) {
+    if (!surface) {
+        fprintf(stderr, "rotate_image: surface is NULL\n");
+        return NULL;
+    }
+
     SDL_Surface* rotated = NULL;
     int w = surface->w;
     int h = surface->h;
@@ -40,6 +44,10 @@ SDL_Surface* rotate_image(SDL_Surface* surface, int orientation) {
     switch (orientation) {
         case 3: // 180 degrees
             rotated = SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, surface->format->format);
+            if (!rotated) {
+                fprintf(stderr, "rotate_image: SDL_CreateRGBSurfaceWithFormat failed\n");
+                return NULL;
+            }
             for (int y = 0; y < h; ++y) {
                 for (int x = 0; x < w; ++x) {
                     ((Uint32*)rotated->pixels)[(h - y - 1) * w + (w - x - 1)] = ((Uint32*)surface->pixels)[y * w + x];
@@ -48,6 +56,10 @@ SDL_Surface* rotate_image(SDL_Surface* surface, int orientation) {
             break;
         case 6: // 90 degrees clockwise
             rotated = SDL_CreateRGBSurfaceWithFormat(0, h, w, 32, surface->format->format);
+            if (!rotated) {
+                fprintf(stderr, "rotate_image: SDL_CreateRGBSurfaceWithFormat failed\n");
+                return NULL;
+            }
             for (int y = 0; y < h; ++y) {
                 for (int x = 0; x < w; ++x) {
                     ((Uint32*)rotated->pixels)[x * h + (h - y - 1)] = ((Uint32*)surface->pixels)[y * w + x];
@@ -56,6 +68,10 @@ SDL_Surface* rotate_image(SDL_Surface* surface, int orientation) {
             break;
         case 8: // 90 degrees counterclockwise
             rotated = SDL_CreateRGBSurfaceWithFormat(0, h, w, 32, surface->format->format);
+            if (!rotated) {
+                fprintf(stderr, "rotate_image: SDL_CreateRGBSurfaceWithFormat failed\n");
+                return NULL;
+            }
             for (int y = 0; y < h; ++y) {
                 for (int x = 0; x < w; ++x) {
                     ((Uint32*)rotated->pixels)[(w - x - 1) * h + y] = ((Uint32*)surface->pixels)[y * w + x];
@@ -64,6 +80,10 @@ SDL_Surface* rotate_image(SDL_Surface* surface, int orientation) {
             break;
         default: // Orientation 1: No transformation
             rotated = SDL_ConvertSurface(surface, surface->format, 0);
+            if (!rotated) {
+                fprintf(stderr, "rotate_image: SDL_ConvertSurface failed\n");
+                return NULL;
+            }
             break;
     }
 
